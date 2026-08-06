@@ -49,7 +49,7 @@ const navigationItems = [
 export function Sidebar() {
   const pathname = usePathname();
   return (
-    <aside className="flex h-screen w-64 flex-col border-r bg-background">
+    <aside className=" flex h-screen w-64 flex-col border-r bg-background">
       {/*Logo*/}
       <div className="flex h-15 items-center border-b p-6">
         <Link href="/dashboard" className="flex items-center gap-3"></Link>
