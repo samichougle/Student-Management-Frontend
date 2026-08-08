@@ -28,21 +28,11 @@ export const LoginForm = () => {
   const router = useRouter();
 
   const onSubmit = async (data: LoginFormData) => {
-    console.log("Form Submitted");
-    console.log(data);
     try {
-      const response = await login(data.email, data.password);
-      console.log(response);
-      console.log(response.data);
+      await login(data.email, data.password);
 
-      localStorage.setItem("accessToken", response.data.accessToken);
-
-      localStorage.setItem("user", JSON.stringify(response.data.user));
-
-      console.log(response);
-      console.log(response.data);
       router.push("/dashboard");
-    } catch (error: any) {
+    } catch (error) {
       console.error(error);
     }
   };

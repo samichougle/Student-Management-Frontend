@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Card,
   CardContent,
@@ -5,7 +7,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-
+import { useRouter } from "next/navigation";
+import { logout } from "@/lib/auth";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -20,6 +23,16 @@ import {
 import { Switch } from "@/components/ui/switch";
 
 export default function SettingsPage() {
+  const router = useRouter();
+
+  async function handleLogout() {
+    try {
+      await logout();
+    } finally {
+      router.replace("/login");
+    }
+  }
+
   return (
     <div className="space-y-8">
       {/* Heading */}
@@ -156,7 +169,9 @@ export default function SettingsPage() {
               </p>
             </div>
 
-            <Button variant="destructive">Sign Out</Button>
+            <Button variant="destructive" onClick={handleLogout}>
+              Sign Out
+            </Button>
           </div>
         </CardContent>
       </Card>

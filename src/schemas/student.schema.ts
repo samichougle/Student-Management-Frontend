@@ -11,7 +11,12 @@ export const studentSchema = z.object({
 
   course_title: z.string().min(2, "Course is required"),
 
-  semester: z.string().min(1, "Semester is required"),
+  semester: z.enum(
+    ["Semester 1", "Semester 2", "Semester 3", "Semester 4", "Graduate"],
+    {
+      error: "Please select a valid semester",
+    },
+  ),
 
   enrollment_at: z.string().min(1, "Enrollment date is required"),
 });

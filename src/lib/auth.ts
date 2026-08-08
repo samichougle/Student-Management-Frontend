@@ -1,15 +1,25 @@
-import { is } from "zod/v4/locales";
+import { api } from "@/lib/axios";
 
-export function getAccessToken() {
-  if (typeof window === "undefined") return null;
-  return localStorage.getItem("accessToken");
+export async function getCurrentUser() {
+  try {
+    const response = await api.get("/users/profile");
+
+    return response.data.data;
+  } catch {
+    return null;
+  }
 }
 
-export function isAuthenticated() {
-  return !!getAccessToken();
+export async function isAuthenticated() {
+  const user = await getCurrentUser();
+
+  return !!user;
 }
 
-export function logout() {
-  localStorage.removeItem("accessToken");
-  localStorage.removeItem("user");
+export async function logout() {
+  try {
+    await api.post("/users/logout");
+  } catch (error) {
+    console.error("Logout failed:", error);
+  }
 }

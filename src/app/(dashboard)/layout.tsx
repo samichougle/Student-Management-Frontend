@@ -14,9 +14,15 @@ type DashbordLayoutProps = {
 export default function DashbordLayout({ children }: DashbordLayoutProps) {
   const router = useRouter();
   useEffect(() => {
-    if (!isAuthenticated()) {
-      router.replace("/login");
+    async function checkAuth() {
+      const authenticated = await isAuthenticated();
+
+      if (!authenticated) {
+        router.replace("/login");
+      }
     }
+
+    checkAuth();
   }, [router]);
 
   return (
