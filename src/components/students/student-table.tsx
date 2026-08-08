@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { DeleteStudentDialog } from "./delete-student-dialog";
 
 import {
   Table,
@@ -31,6 +32,9 @@ type StudentTableProps = {
 
 export function StudentTable({ students, startIndex }: StudentTableProps) {
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
+  const [selectedStudentId, setSelectedStudentId] = useState<number | null>(
+    null,
+  );
 
   return (
     <>
@@ -38,7 +42,7 @@ export function StudentTable({ students, startIndex }: StudentTableProps) {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-16">#</TableHead>
+              <TableHead className="w-16">No.</TableHead>
               <TableHead>Name</TableHead>
               <TableHead>Email</TableHead>
               <TableHead>Phone</TableHead>
@@ -77,11 +81,6 @@ export function StudentTable({ students, startIndex }: StudentTableProps) {
                     </DropdownMenuTrigger>
 
                     <DropdownMenuContent align="end">
-                      <DropdownMenuItem>
-                        <Eye className="mr-2 h-4 w-4" />
-                        View
-                      </DropdownMenuItem>
-
                       <DropdownMenuItem
                         onClick={() => setSelectedStudent(student)}
                       >
@@ -89,7 +88,9 @@ export function StudentTable({ students, startIndex }: StudentTableProps) {
                         Edit
                       </DropdownMenuItem>
 
-                      <DropdownMenuItem className="text-destructive focus:text-destructive">
+                      <DropdownMenuItem
+                        onClick={() => setSelectedStudentId(student.id)}
+                      >
                         <Trash2 className="mr-2 h-4 w-4" />
                         Delete
                       </DropdownMenuItem>
@@ -109,6 +110,17 @@ export function StudentTable({ students, startIndex }: StudentTableProps) {
           onOpenChange={(open) => {
             if (!open) {
               setSelectedStudent(null);
+            }
+          }}
+        />
+      )}
+      {selectedStudentId && (
+        <DeleteStudentDialog
+          studentId={selectedStudentId}
+          open={true}
+          onOpenChange={(open) => {
+            if (!open) {
+              setSelectedStudentId(null);
             }
           }}
         />

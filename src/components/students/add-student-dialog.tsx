@@ -1,6 +1,5 @@
-import { useState } from "react";
+import { useState, type ReactElement } from "react";
 import { Plus } from "lucide-react";
-
 import {
   Dialog,
   DialogContent,
@@ -18,7 +17,11 @@ import { StudentForm } from "./student-form";
 import { fa } from "zod/v4/locales";
 import { Student } from "@/types/student";
 
-export function AddStudentDialog() {
+type AddStudentDialogProps = {
+  trigger?: ReactElement;
+};
+
+export function AddStudentDialog({ trigger }: AddStudentDialogProps) {
   const [open, setOpen] = useState(false);
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
@@ -42,10 +45,12 @@ export function AddStudentDialog() {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger
         render={
-          <Button className="h-11 w-full px-5 sm:w-auto">
-            <Plus className="mr-2 h-4 w-4" />
-            Add Student
-          </Button>
+          trigger ?? (
+            <Button className="h-11 w-full px-5 sm:w-auto">
+              <Plus className="mr-2 h-4 w-4" />
+              Add Student
+            </Button>
+          )
         }
       />
       <DialogContent className="sm:max-w-2xl">

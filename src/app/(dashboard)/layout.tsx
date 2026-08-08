@@ -20,13 +20,13 @@ export default function DashbordLayout({ children }: DashbordLayoutProps) {
   }, [router]);
 
   return (
-    <div className="flex min-h-screen">
-      <div className="hidden lg:block">
+    <div className="flex h-screen overflow-hidden">
+      <div className="hidden lg:block h-full">
         <Sidebar />
       </div>
 
-      <div className="flex flex-1 flex-col">
-        <Navbar />
+      <div className="flex-1 overflow-y-auto p-6 lg:p-8">
+        {/* <Navbar /> */}
 
         <main className="flex-1 p-6">{children}</main>
       </div>
