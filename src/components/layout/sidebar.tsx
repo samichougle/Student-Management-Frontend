@@ -5,11 +5,18 @@ import { usePathname } from "next/navigation";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
-import { LayoutDashboard, Users, Settings, GraduationCap } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import {
+  LayoutDashboard,
+  Users,
+  Settings,
+  GraduationCap,
+  Plus,
+} from "lucide-react";
 
+import { Button } from "@/components/ui/button";
 import { AddStudentDialog } from "@/components/students/add-student-dialog";
+
+import { useCurrentUser } from "@/hooks/use-current-user";
 
 const navigationItems = [
   {
@@ -32,11 +39,32 @@ const navigationItems = [
 export function Sidebar() {
   const pathname = usePathname();
 
+  const { user, isLoading } = useCurrentUser();
+
+  const getInitials = (name?: string) => {
+    if (!name) return "U";
+
+    return name
+      .split(" ")
+      .map((word) => word[0])
+      .join("")
+      .slice(0, 2)
+      .toUpperCase();
+  };
+
+  const formatRole = (role?: string) => {
+    if (!role) return "User";
+
+    return role.charAt(0).toUpperCase() + role.slice(1);
+  };
+
   return (
     <aside className="flex h-screen w-64 flex-col border-r bg-background">
       {/* Logo */}
-      <div className="flex h-16 items-center gap-3 border-b px-6">
-        <GraduationCap className="h-7 w-7 text-primary" />
+      <div className="flex items-center gap-3 border-b px-4 py-4">
+        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+          <GraduationCap className="h-5 w-5" />
+        </div>
 
         <div>
           <h1 className="text-lg font-bold">Student-MS</h1>
@@ -62,6 +90,7 @@ export function Sidebar() {
                   }`}
                 >
                   <Icon className="h-5 w-5" />
+
                   <span>{item.title}</span>
                 </Link>
               </li>
@@ -72,8 +101,9 @@ export function Sidebar() {
           <li>
             <AddStudentDialog
               trigger={
-                <Button className="flex w-full h-9 items-center mt-15 gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground">
+                <Button className="mt-15 flex h-9 w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground">
                   <Plus className="h-5 w-5" />
+
                   <span>Add Student</span>
                 </Button>
               }
@@ -86,13 +116,23 @@ export function Sidebar() {
       <div className="border-t p-4">
         <div className="flex items-center gap-3">
           <Avatar>
-            <AvatarImage src="" alt="User" />
-            <AvatarFallback>SC</AvatarFallback>
+            <AvatarImage src="" alt={user?.name ?? "User"} />
+
+            <AvatarFallback>
+              {isLoading ? "..." : getInitials(user?.name)}
+            </AvatarFallback>
           </Avatar>
 
-          <div>
-            <p className="text-sm font-medium">Sami Chougle</p>
-            <p className="text-xs text-muted-foreground">Administrator</p>
+          <div className="min-w-0">
+            <p className="truncate text-sm font-medium">
+              {isLoading ? "Loading..." : (user?.name ?? "User")}
+            </p>
+
+            <p className="truncate text-xs text-muted-foreground">
+              {isLoading
+                ? "Loading..."
+                : (user?.email ?? formatRole(user?.role))}
+            </p>
           </div>
         </div>
       </div>

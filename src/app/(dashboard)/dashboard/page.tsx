@@ -1,18 +1,43 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import { Users, GraduationCap, BookOpen, TrendingUp } from "lucide-react";
 
 import { StatsCard } from "@/components/dashboard/stats-card";
-import { RecentStudents } from "@/components/dashboard/recent-students";
-import { QuickActions } from "@/components/dashboard/quick-actions";
 import { WelcomeBanner } from "@/components/dashboard/welcome-banner";
 import { AdmissionsChart } from "@/components/dashboard/admissions-chart";
 import { SemesterChart } from "@/components/dashboard/semester-chart";
 
+import {
+  getDashboardStats,
+  type DashboardStats,
+} from "@/services/dashboard.service";
+
 export default function DashboardPage() {
+  const [stats, setStats] = useState<DashboardStats | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadDashboard() {
+      try {
+        const data = await getDashboardStats();
+
+        setStats(data);
+      } catch (error) {
+        console.error("Failed to load dashboard:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    loadDashboard();
+  }, []);
+
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       {/* Heading */}
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
+        <h1 className="text-4xl font-bold tracking-tight">Dashboard</h1>
 
         <p className="mt-1 text-muted-foreground">
           Overview of your student management system.
@@ -26,48 +51,44 @@ export default function DashboardPage() {
       <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
         <StatsCard
           title="Total Students"
-          value="120"
+          value={isLoading ? "..." : String(stats?.totalStudents ?? 0)}
           icon={Users}
-          description="+12 this month"
+          description={
+            isLoading ? "Loading..." : `+${stats?.currentMonth ?? 0} this month`
+          }
         />
 
         <StatsCard
           title="Courses"
-          value="8"
+          value={isLoading ? "..." : String(stats?.totalCourses ?? 0)}
           icon={BookOpen}
           description="Active programs"
         />
 
         <StatsCard
           title="Semesters"
-          value="6"
+          value={isLoading ? "..." : String(stats?.semesters?.length ?? 0)}
           icon={GraduationCap}
-          description="Current batches"
+          description="Available semesters"
         />
 
         <StatsCard
           title="Growth"
-          value="+18%"
+          value={
+            isLoading
+              ? "..."
+              : `${(stats?.growth ?? 0) >= 0 ? "+" : ""}${stats?.growth ?? 0}%`
+          }
           icon={TrendingUp}
           description="Compared to last month"
         />
       </div>
 
-      {/* Recent Students & Quick Actions */}
-      <div className="grid gap-6 xl:grid-cols-3">
-        <div className="xl:col-span-2">
-          <RecentStudents />
-        </div>
-
-        <div>
-          <QuickActions />
-        </div>
-      </div>
-
       {/* Analytics */}
       <div className="grid min-w-0 gap-6 lg:grid-cols-2">
-        <AdmissionsChart />
-        <SemesterChart />
+        <AdmissionsChart data={stats?.admissions ?? []} />
+
+        <SemesterChart data={stats?.semesters ?? []} />
       </div>
     </div>
   );

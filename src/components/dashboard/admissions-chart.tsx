@@ -8,15 +8,14 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 
-const data = [
-  { month: "Jan", admissions: 12 },
-  { month: "Feb", admissions: 18 },
-  { month: "Mar", admissions: 14 },
-  { month: "Apr", admissions: 22 },
-  { month: "May", admissions: 28 },
-  { month: "Jun", admissions: 24 },
-  { month: "Jul", admissions: 32 },
-];
+type AdmissionStat = {
+  month: string;
+  admissions: number;
+};
+
+type AdmissionsChartProps = {
+  data: AdmissionStat[];
+};
 
 const chartConfig = {
   admissions: {
@@ -24,17 +23,19 @@ const chartConfig = {
   },
 };
 
-export function AdmissionsChart() {
+export function AdmissionsChart({ data }: AdmissionsChartProps) {
   return (
     <div className="min-w-0 rounded-xl border bg-card p-6">
+      {/* Header */}
       <div className="mb-6">
-        <h2 className="text-lg font-semibold">Admissions Overview</h2>
+        <h3 className="text-lg font-semibold">Admissions Overview</h3>
 
         <p className="text-sm text-muted-foreground">
           Student admissions over the last 7 months.
         </p>
       </div>
 
+      {/* Chart */}
       <ChartContainer config={chartConfig} className="h-75 w-full min-w-0">
         <BarChart
           data={data}
@@ -54,7 +55,12 @@ export function AdmissionsChart() {
             tickMargin={8}
           />
 
-          <YAxis tickLine={false} axisLine={false} tickMargin={8} />
+          <YAxis
+            tickLine={false}
+            axisLine={false}
+            tickMargin={8}
+            allowDecimals={false}
+          />
 
           <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
 

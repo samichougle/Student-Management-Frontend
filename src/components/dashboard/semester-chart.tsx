@@ -1,6 +1,6 @@
 "use client";
 
-import { Pie, PieChart, Cell } from "recharts";
+import { Pie, PieChart } from "recharts";
 
 import {
   ChartContainer,
@@ -8,23 +8,24 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 
-const data = [
-  { semester: "Semester 1", students: 32 },
-  { semester: "Semester 2", students: 28 },
-  { semester: "Semester 3", students: 24 },
-  { semester: "Semester 4", students: 20 },
-  { semester: "Graduate", students: 16 },
-];
+type SemesterStat = {
+  semester: string;
+  count: number;
+};
+
+type SemesterChartProps = {
+  data: SemesterStat[];
+};
 
 const chartConfig = {
-  students: {
+  count: {
     label: "Students",
   },
 };
 
-export function SemesterChart() {
+export function SemesterChart({ data }: SemesterChartProps) {
   return (
-    <div className="min-w-0 rounded-xl border bg-card p-6">
+    <div className="rounded-xl border bg-card p-6">
       <div className="mb-6">
         <h2 className="text-lg font-semibold">Semester Distribution</h2>
 
@@ -43,7 +44,7 @@ export function SemesterChart() {
 
             <Pie
               data={data}
-              dataKey="students"
+              dataKey="count"
               nameKey="semester"
               innerRadius={70}
               outerRadius={100}
@@ -60,7 +61,7 @@ export function SemesterChart() {
             >
               <span className="text-muted-foreground">{item.semester}</span>
 
-              <span className="font-medium">{item.students}</span>
+              <span className="font-medium">{item.count}</span>
             </div>
           ))}
         </div>
